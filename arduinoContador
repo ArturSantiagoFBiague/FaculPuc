@@ -1,0 +1,51 @@
+const byte interrupt = 2;
+const byte botao = 13;
+volatile byte estado = HIGH;
+bool buttonPressed = false;
+int num = 0, valor = 1, sinal = 0;
+
+void setup() {
+  //Configs
+  pinMode(botao, OUTPUT);
+  pinMode(interrupt, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interrupt), blink, CHANGE);
+  
+  TCCR1A  = 0;
+  TCCR1B  = 0;
+  TCCR1B  |= (1<< CS10) | (1 << CS12);
+  TCNT1   = 0xC2F7;
+  TIMSK1  |= (1 << TOIE1);
+  
+  Serial.begin(9600);
+}
+
+void loop(){
+   
+}
+void blink() {
+  estado = digitalRead(interrupt);
+  
+  if (estado == LOW) {
+    buttonPressed = true;
+  }
+
+  if(sinal != estado){
+    sinal = 1;
+  }
+  
+}
+
+ISR(TIMER1_OVF_vect){
+  TCNT1 = 0xC2F7;
+  digitalWrite(botao, digitalRead(botao) ^ 1);
+  
+  if(buttonPressed){
+    
+    num = num + valor;
+
+    Serial.print(num);
+    Serial.print(' ');
+    buttonPressed = false;
+  }
+  
+}
