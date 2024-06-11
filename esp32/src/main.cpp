@@ -4,11 +4,13 @@
 dht DHT;
 
 
-const char* ssid     = "Mete_O_Pe";
-const char* password = "Rutra321";
-
-int LED     = 13;
-int PinTemp = 12;
+const char* ssid     = "redmi10";
+const char* password = "81642366";
+ 
+int PinLuz   = 13;
+int PinTemp  = 12;
+int PinVent  = 11;
+int PinBomba = 10;
 
 WiFiServer server(80);
 
@@ -19,10 +21,14 @@ int catch_temp(){
   return aux;
 }
 
+int ventilador(){
+  
+}
+
 void setup() {
 
   Serial.begin(115200);
-  pinMode(LED, OUTPUT);
+  pinMode(PinLuz, OUTPUT);
 
   Serial.println();
   Serial.print("Conectando-se a ");
@@ -60,8 +66,8 @@ void loop() {
             client.println();
 
             //  EXIBIR NO HTML
-            client.print("Click <a href=\"/H\">here</a> to turn the LED on pin 2 on.<br>");
-            client.print("Click <a href=\"/L\">here</a> to turn the LED on pin 2 off.<br>");
+            client.print("Click <a href=\"/H\">here</a> to turn the PinLuz on pin 2 on.<br>");
+            client.print("Click <a href=\"/L\">here</a> to turn the PinLuz on pin 2 off.<br>");
             client.print("Click <a href=\"/\">here</a> to update temp:.<br>");
             client.print("TEMPERATURA: ");
             client.print(DHT.temperature, 0);
@@ -77,14 +83,14 @@ void loop() {
         }
         //   CREATE FUNCTIONS
         if (currentLine.endsWith("GET /H")) {
-          digitalWrite(LED, HIGH);
+          digitalWrite(PinLuz, HIGH);
         }
         if (currentLine.endsWith("GET /L")) {
-          digitalWrite(LED, LOW);
+          digitalWrite(PinLuz, LOW);
         }
       }
     }
     client.stop();
-    Serial.println("Client Disconnected.");
+    //Serial.println("Client Disconnected.");
   }
 }
