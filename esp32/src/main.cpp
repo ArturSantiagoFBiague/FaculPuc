@@ -4,31 +4,62 @@
 dht DHT;
 
 
-const char* ssid     = "redmi10";
-const char* password = "81642366";
+const char* ssid     = "Sai fora sapo";
+const char* password = "12345678";
  
+int PinUmid  = 34;
 int PinLuz   = 13;
 int PinTemp  = 12;
+
 int PinVent  = 11;
 int PinBomba = 10;
 
 WiFiServer server(80);
 
+//Sensores
 int catch_temp(){
   int aux;
-  //Serial.print(DHT.humidity); //IMPRIME NA SERIAL O VALOR DE UMIDADE MEDIDO
+  //Serial.print(DHT.humidity);             //IMPRIME NA SERIAL O VALOR DE UMIDADE MEDIDO
   aux =  Serial.print(DHT.temperature, 0); //IMPRIME NA SERIAL O VALOR DE UMIDADE MEDIDO E REMOVE A PARTE DECIMAL
   return aux;
 }
+int catch_solo(){
+  int umidade = analogRead(PinUmid);
+  int umidadePorcet = map(umidade, 0, 4095, 0, 100); // Converte o valor para uma escala de 0 a 100%
+  return umidadePorcet;
+}
 
-int ventilador(){
-  
+//Açoes 
+void ligarVent(){
+  //A fazer
+}
+
+void desligarVent(){
+  //A fazer
+}
+
+void ligarBomba(){
+  //A Fazer
+}
+
+void desligarBomba(){
+  //A Fazer
+}
+
+
+void ligarLuz(){
+  digitalWrite(PinLuz, HIGH);
+}
+
+void desligarLuz(){
+  digitalWrite(PinLuz, LOW);
 }
 
 void setup() {
 
   Serial.begin(115200);
   pinMode(PinLuz, OUTPUT);
+  pinMode(PinUmid, INPUT);
 
   Serial.println();
   Serial.print("Conectando-se a ");
@@ -55,6 +86,7 @@ void loop() {
     String currentLine = "";
     while (client.connected()) {
       DHT.read11(PinTemp);
+      int umidadeShow = catch_solo();
 
       if (client.available()) {
         char c = client.read();
@@ -66,11 +98,14 @@ void loop() {
             client.println();
 
             //  EXIBIR NO HTML
-            client.print("Click <a href=\"/H\">here</a> to turn the PinLuz on pin 2 on.<br>");
-            client.print("Click <a href=\"/L\">here</a> to turn the PinLuz on pin 2 off.<br>");
-            client.print("Click <a href=\"/\">here</a> to update temp:.<br>");
+            client.print("Click <a href=\"/H\">here</a> Ligar Luz.<br>");
+            client.print("Click <a href=\"/L\">here</a> Desligar Luz.<br>");
+            client.print("Click <a href=\"/\">here</a> Atulizar Dados....<br>");
             client.print("TEMPERATURA: ");
             client.print(DHT.temperature, 0);
+            client.print("UMIDADE DO SOLO: ");
+            client.print(umidadeShow, 0);
+            
 
 
             client.println();
@@ -83,11 +118,12 @@ void loop() {
         }
         //   CREATE FUNCTIONS
         if (currentLine.endsWith("GET /H")) {
-          digitalWrite(PinLuz, HIGH);
+          ligarLuz();
         }
         if (currentLine.endsWith("GET /L")) {
-          digitalWrite(PinLuz, LOW);
+          desligarLuz();
         }
+        
       }
     }
     client.stop();
