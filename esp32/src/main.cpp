@@ -3,9 +3,8 @@
 
 dht DHT;
 
-
-const char* ssid     = "Sai fora sapo";
-const char* password = "12345678";
+const char* ssid     = "Mete_O_Pe";
+const char* password = "Rutra321";
  
 int PinUmid  = 34;
 int PinLuz   = 13;
@@ -31,21 +30,18 @@ int catch_solo(){
 
 //Açoes 
 void ligarVent(){
-  //A fazer
+  digitalWrite(PinVent, HIGH);
 }
 
 void desligarVent(){
-  //A fazer
+  digitalWrite(PinVent, LOW);
 }
 
 void ligarBomba(){
-  //A Fazer
+  digitalWrite(PinBomba, HIGH);
+  delay(800);
+   digitalWrite(PinVent, LOW);
 }
-
-void desligarBomba(){
-  //A Fazer
-}
-
 
 void ligarLuz(){
   digitalWrite(PinLuz, HIGH);
@@ -98,16 +94,18 @@ void loop() {
             client.println();
 
             //  EXIBIR NO HTML
-            client.print("Click <a href=\"/H\">here</a> Ligar Luz.<br>");
-            client.print("Click <a href=\"/L\">here</a> Desligar Luz.<br>");
-            client.print("Click <a href=\"/\">here</a> Atulizar Dados....<br>");
+            client.print("Click para <a href=\"/H\">ligar a Luz</a><br>");
+            client.print("Click para <a href=\"/L\">Desligar a Luz</a><br>");
+            client.print("Click para <a href=\"/T\">Ligar Ventilador</a><br>");
+            client.print("Click para <a href=\"/E\">Desligar Ventilador</a><br>");
+            client.print("Click para <a href=\"/F\">Irrigar</a><br>");
+            client.print("Click para <a href=\"/\"> Atulizar Dados....</a><br>");
             client.print("TEMPERATURA: ");
             client.print(DHT.temperature, 0);
-            client.print("UMIDADE DO SOLO: ");
+            client.print("<br>UMIDADE DO SOLO EM ");
             client.print(umidadeShow, 0);
+            client.print("% <br>");
             
-
-
             client.println();
             break;
           } else {
@@ -122,6 +120,15 @@ void loop() {
         }
         if (currentLine.endsWith("GET /L")) {
           desligarLuz();
+        }
+        if (currentLine.endsWith("GET /T")) {
+          ligarVent();
+        }
+        if (currentLine.endsWith("GET /E")) {
+          desligarVent();
+        }
+        if (currentLine.endsWith("GET /F")) {
+          ligarBomba();
         }
         
       }
